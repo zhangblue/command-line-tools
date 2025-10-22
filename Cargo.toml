@@ -1,5 +1,5 @@
 [package]
-name = "rust-cli"
+name = "rust_cmd"
 version = "0.1.0"
 edition = "2024"
 authors = ["zhangdi"]
@@ -8,3 +8,4 @@ authors = ["zhangdi"]
 clap = { version = "4.5.50", features = ["derive"] }
 anyhow = "1.0.100"
 serde_json = "1.0.145"
+base64 = "0.22.1"

@@ -1,12 +1,17 @@
 use clap::Parser;
-use rust_cli::{Opts, SubCommand};
+use rust_cmd::{Opts, SubCommand, process_base64, process_times};
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let opts = Opts::parse();
 
     match opts.cmd {
-        SubCommand::Base64(sub_cmd) => {
-            println!("base64----{:?}", sub_cmd)
+        SubCommand::Base64(sub_command) => {
+            process_base64(sub_command)?;
+        }
+        SubCommand::Time(sub_command) => {
+            process_times(sub_command)?;
         }
     }
+
+    Ok(())
 }
