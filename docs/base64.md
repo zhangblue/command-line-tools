@@ -31,6 +31,8 @@ Options:
           [default: -]
 
   -f, --format <FORMAT>
+          Standard: 标准模式。UrlSafe: url安全模式
+
           [default: standard]
           [possible values: standard, url-safe]
 

@@ -19,7 +19,13 @@ pub struct Base64EncodeOpts {
     )]
     pub input: String,
 
-    #[arg(short, long, default_value = "standard")]
+    #[arg(
+        short,
+        long,
+        default_value = "standard",
+        help = "编码方式",
+        long_help = "Standard: 标准模式。UrlSafe: url安全模式"
+    )]
     pub format: Base64Format,
 }
 
