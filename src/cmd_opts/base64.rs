@@ -13,11 +13,18 @@ pub struct Base64EncodeOpts {
     #[arg(
         short,
         long,
-        default_value = "-",
-        help = "需要编码的文件路径，如果不填则手动输入文本",
-        long_help = "需要编码的文件路径，如果不填则手动输入文本"
+        help = "需要编码的文件路径，无此参数则手动输入文本",
+        long_help = "需要编码的文件路径，无此参数则手动输入文本"
     )]
-    pub input: String,
+    pub input: Option<String>,
+
+    #[arg(
+        short,
+        long,
+        help = "输出文件。无此参数将在终端打印",
+        long_help = "输出文件。无此参数将在终端打印"
+    )]
+    pub output: Option<String>,
 
     #[arg(
         short,
@@ -34,11 +41,18 @@ pub struct Base64DecodeOpts {
     #[arg(
         short,
         long,
-        default_value = "-",
         help = "需要解码的文件路径，如不填则手动输入文本",
         long_help = "需要解码的文件路径，如不填则手动输入文本"
     )]
-    pub input: String,
+    pub input: Option<String>,
+
+    #[arg(
+        short,
+        long,
+        help = "输出文件。无此参数将在终端打印",
+        long_help = "输出文件。无此参数将在终端打印"
+    )]
+    pub output: Option<String>,
 
     #[arg(
         short,

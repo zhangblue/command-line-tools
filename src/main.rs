@@ -1,5 +1,5 @@
 use clap::Parser;
-use rust_cmd::{Opts, SubCommand, process_base64, process_times};
+use rust_cmd::{Opts, SubCommand, process_base64, process_json, process_times};
 
 fn main() -> anyhow::Result<()> {
     let opts = Opts::parse();
@@ -10,6 +10,9 @@ fn main() -> anyhow::Result<()> {
         }
         SubCommand::Time(sub_command) => {
             process_times(sub_command)?;
+        }
+        SubCommand::Json(opts) => {
+            process_json(opts)?;
         }
     }
 
