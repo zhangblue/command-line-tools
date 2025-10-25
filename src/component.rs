@@ -1,4 +1,5 @@
 use crate::{Error, error};
+use std::fmt::Display;
 use std::fs::File;
 use std::io::{Read, Write};
 
@@ -21,7 +22,10 @@ pub fn get_reader(input: Option<&String>) -> error::Result<Box<dyn Read>> {
 }
 
 // 在命令行中打印数据
-pub fn stdout(content: String) {
+pub fn stdout<T>(content: T)
+where
+    T: Display,
+{
     println!("------结果-------");
     println!("{content}");
 }

@@ -29,7 +29,7 @@ pub enum SubCommand {
     )]
     Base64(Base64SubCommand),
     #[command(subcommand, about = "对时间进行处理", long_about = "对时间进行处理")]
-    Time(TimeSubCommand),
+    Date(TimeSubCommand),
 
     #[command(name = "json", about = "json进行格式化", long_about = "json格式化")]
     Json(JsonOpts),

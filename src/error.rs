@@ -2,13 +2,17 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug, Clone, strum_macros::AsRefStr)]
 pub enum Error {
-    FileNotExistError { msg: String }, // 文件不存在
-    IllegalJsonError { msg: String },  // 非法Json
-    ReadInputError { msg: String },    // 读取输入内容错误
-    JsonFormatError { msg: String },   // json格式化失败
-    WriteOutputError { msg: String },  // 写文件失败
-    FormatUtf8Error { msg: String },   // 转成utf8错误
-    Base64DecodeError { msg: String }, // base64 解码错误
+    FileNotExistError { msg: String },    // 文件不存在
+    IllegalJsonError { msg: String },     // 非法Json
+    ReadInputError { msg: String },       // 读取输入内容错误
+    JsonFormatError { msg: String },      // json格式化失败
+    WriteOutputError { msg: String },     // 写文件失败
+    FormatUtf8Error { msg: String },      // 转成utf8错误
+    Base64DecodeError { msg: String },    // base64 解码错误
+    TimestampError { msg: String },       // 获取时间戳错误
+    TimestampFormatError { msg: String }, // 时间戳转换失败
+    TimezoneError,
+    DateFormatError{msg: String},
 }
 
 impl Error {
@@ -21,6 +25,10 @@ impl Error {
             Error::WriteOutputError { msg } => println!("生成输出文件失败: {msg}"),
             Error::FormatUtf8Error { msg } => println!("转成UTF8格式失败: {msg}"),
             Error::Base64DecodeError { msg } => println!("base64解码失败: {msg}"),
+            Error::TimestampError { msg } => println!("获取时间戳失败: {msg}"),
+            Error::TimestampFormatError { msg } => println!("时间戳转换失败: {msg}"),
+            Error::TimezoneError => println!("时区设置错误"),
+            Error::DateFormatError { msg } => println!("时间格式不正确: {msg}")
         }
     }
 }

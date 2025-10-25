@@ -6,7 +6,7 @@ fn main() {
 
     let result = match opts.cmd {
         SubCommand::Base64(sub_command) => process_base64(sub_command),
-        SubCommand::Time(sub_command) => process_times(sub_command),
+        SubCommand::Date(sub_command) => process_times(sub_command),
         SubCommand::Json(opts) => process_json(opts),
     };
 
