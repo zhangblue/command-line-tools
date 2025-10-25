@@ -33,7 +33,7 @@ fn json_format(
         String::from_utf8(buffer).map_err(|e| Error::ReadInputError { msg: e.to_string() })?;
 
     let value: Value = serde_json::from_str(&input_value).map_err(|_| Error::IllegalJsonError {
-        msg: "非法的json格式".to_owned(),
+        msg: input_value.to_owned(),
     })?;
 
     let json_value = match format {

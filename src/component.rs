@@ -12,8 +12,9 @@ pub fn get_reader(input: Option<&String>) -> error::Result<Box<dyn Read>> {
         Box::new(std::io::stdin())
     } else {
         Box::new(
-            File::open(input.unwrap().trim())
-                .map_err(|e| Error::FileDoesNotExistError { msg: e.to_string() })?,
+            File::open(input.unwrap().trim()).map_err(|_| Error::FileNotExistError {
+                msg: input.unwrap().to_owned(),
+            })?,
         )
     };
     Ok(reader)
