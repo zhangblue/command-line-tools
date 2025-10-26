@@ -2,9 +2,14 @@ use clap::{Parser, ValueEnum};
 
 #[derive(Debug, Parser)]
 pub enum TimeSubCommand {
-    #[command(name = "to_date", about = "将时间戳转成日期")]
+    #[command(
+        name = "to_date",
+        about = "时间戳转日期",
+        long_about = "将输入的时间戳转换成日期格式",
+        author
+    )]
     ToDate(DateOpt),
-    #[command(name = "to_timestamp", about = "将日期转成时间戳")]
+    #[command(name = "to_timestamp", about = "将日期转成时间戳", author)]
     ToTimeStamp(TimeStampOpt),
 }
 
@@ -13,8 +18,8 @@ pub struct DateOpt {
     #[arg(
         short,
         long,
-        help = "时间戳。默认使用now",
-        long_help = "时间戳。默认使用now"
+        help = "时间戳",
+        long_help = "时间戳。\n- 如不填则自动获取当前时间戳"
     )]
     pub input: Option<i64>,
 
@@ -22,7 +27,7 @@ pub struct DateOpt {
         short,
         long,
         help = "输入时间戳的单位",
-        long_help = "输入时间戳的单位",
+        long_help = "时间戳单位. 次参数必须与input参数匹配。 \n- 可选：second (秒)，millisecond (毫秒)",
         default_value = "millisecond"
     )]
     pub unit: TimestampUnit,
@@ -30,8 +35,8 @@ pub struct DateOpt {
     #[arg(
         short,
         long,
-        help = "时区。负数表示西区，正数表示东区，0表示UTC。默认使用当前时区",
-        long_help = "时区。负数表示西区，正数表示东区，0表示UTC。默认使用当前时区"
+        help = "输出日期的时区",
+        long_help = "输出日期的时区。\n- 负数表示西区，正数表示东区，0表示UTC。默认使用当前时区 \n- 例子：东8区: -t=8 \n- 例子：西2区: -t=-2"
     )]
     pub timezone: Option<i32>,
 }
@@ -48,7 +53,8 @@ pub struct TimeStampOpt {
         short,
         long,
         help = "时区。负数表示西区，正数表示东区，0表示UTC。默认使用当前时区",
-        long_help = "时区。负数表示西区，正数表示东区，0表示UTC。默认使用当前时区"
+        long_help = "时区。负数表示西区，正数表示东区，0表示UTC。默认使用当前时区",
+        alias = "tz"
     )]
     pub timezone: Option<i32>,
 

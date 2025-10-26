@@ -1,4 +1,4 @@
-use crate::cmd_opts::times::{DateFormat, TimeSubCommand, TimestampUnit};
+use crate::cmd_opts::date::{DateFormat, TimeSubCommand, TimestampUnit};
 use crate::component::stdout;
 use crate::{Error, error};
 use chrono::TimeZone;

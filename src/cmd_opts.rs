@@ -1,10 +1,10 @@
 pub(crate) mod base64;
 pub(crate) mod jsons;
-pub(crate) mod times;
+pub(crate) mod date;
 
 use crate::cmd_opts::base64::Base64SubCommand;
 use crate::cmd_opts::jsons::JsonOpts;
-use crate::cmd_opts::times::TimeSubCommand;
+use crate::cmd_opts::date::TimeSubCommand;
 use clap::Parser;
 
 #[derive(Debug, Parser)]
