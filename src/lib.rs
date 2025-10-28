@@ -14,3 +14,4 @@ pub use cmd_process::process_json;
 pub use cmd_process::process_times;
 pub use cmd_process::process_photo;
 pub use cmd_process::process_files;
+pub use cmd_process::process_port_scanner;
