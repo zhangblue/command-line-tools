@@ -12,3 +12,5 @@ pub use error::Result;
 pub use cmd_process::process_base64;
 pub use cmd_process::process_json;
 pub use cmd_process::process_times;
+pub use cmd_process::process_photo;
+pub use cmd_process::process_files;

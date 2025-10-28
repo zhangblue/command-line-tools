@@ -83,7 +83,7 @@ pub enum DateFormat {
 }
 
 impl DateFormat {
-    pub fn to_format(&self) -> &'static str {
+    pub fn to_format(self) -> &'static str {
         match self {
             DateFormat::Ymd => "%Y-%m-%d",
             DateFormat::YmdH => "%Y-%m-%d_%H",

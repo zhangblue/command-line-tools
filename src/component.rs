@@ -1,4 +1,5 @@
 use crate::{Error, error};
+use sha2::Digest;
 use std::fmt::Display;
 use std::fs::File;
 use std::io::{Read, Write};
@@ -36,4 +37,48 @@ pub fn write_to_file(output: &str, content: String) -> error::Result<()> {
         msg: err.to_string(),
     })?;
     Ok(())
+}
+
+/// 计算文件的sha256
+pub fn compute_sha256(file_path: &str) -> error::Result<String> {
+    let mut file =
+        File::open(file_path).map_err(|e| Error::FileNotExistError { msg: e.to_string() })?;
+    let mut hasher = sha2::Sha256::new();
+    let mut buffer = [0u8; 1024 * 64];
+
+    loop {
+        let bytes_read = file
+            .read(&mut buffer)
+            .map_err(|e| Error::ReadFileError { msg: e.to_string() })?;
+        if bytes_read == 0 {
+            break;
+        }
+        hasher.update(&buffer[..bytes_read]);
+    }
+
+    let result = hasher.finalize();
+
+    let hex_str: Vec<String> = result[..]
+        .iter()
+        .map(|&byte| format!("{:02X}", byte))
+        .collect();
+
+    Ok(hex_str.join("").to_lowercase())
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::component::compute_sha256;
+
+    #[test]
+    fn test_compute_sha256() {
+        let sha256 =
+            compute_sha256("/Users/zhangdi/work/workspace/github/myself/rust_cmd/Cargo.toml")
+                .unwrap();
+
+        assert_eq!(
+            sha256,
+            "caa578b585b2ca4e250e86fdfaa12f4c4a3ed8bed5b7021dba288a9a509bc055"
+        );
+    }
 }
