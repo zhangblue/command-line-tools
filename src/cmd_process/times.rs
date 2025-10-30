@@ -31,14 +31,14 @@ fn process_to_timestamp(
     output: TimestampUnit,
 ) -> error::Result<()> {
     let naive_dt = chrono::NaiveDateTime::parse_from_str(&input, format.to_format())
-        .map_err(|e| Error::DateFormatError { msg: e.to_string() })?;
+        .map_err(|e| Error::DateFormatError(e.to_string()))?;
 
     let offset = get_time_zome_offset(timezone)?;
 
     let local_dt = offset
         .from_local_datetime(&naive_dt)
         .single()
-        .ok_or(Error::TimezoneError)?;
+        .ok_or("时区错误")?;
 
     let res = match output {
         TimestampUnit::Second => local_dt.with_timezone(&chrono::Utc).timestamp(),
@@ -65,9 +65,7 @@ fn process_to_date(
         TimestampUnit::Second => chrono::DateTime::from_timestamp(timestamp, 0),
         TimestampUnit::Millisecond => chrono::DateTime::from_timestamp_millis(timestamp),
     }
-    .ok_or(Error::TimestampFormatError {
-        msg: timestamp.to_string(),
-    })?;
+    .ok_or("时间戳转换失败，请确认是否是正确的时间戳格式")?;
     let formated = format_date
         .with_timezone(&time_zone)
         .format("%Y-%m-%d %H:%M:%S%.3f")
@@ -92,7 +90,7 @@ fn get_time_zome_offset(timezone: Option<i32>) -> error::Result<chrono::FixedOff
     } else {
         chrono::FixedOffset::east_opt(offset)
     }
-    .ok_or(Error::TimezoneError)?;
+    .ok_or("时区错误")?;
 
     Ok(time_zone)
 }

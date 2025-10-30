@@ -42,7 +42,7 @@ pub fn write_to_file(output: &str, content: String) -> error::Result<()> {
 /// 计算文件的sha256
 pub fn compute_sha256(file_path: &str) -> error::Result<String> {
     let mut file =
-        File::open(file_path).map_err(|e| Error::FileNotExistError { msg: e.to_string() })?;
+        File::open(file_path).map_err(|_e| Error::OpenFileError(file_path.to_string()))?;
     let mut hasher = sha2::Sha256::new();
     let mut buffer = [0u8; 1024 * 64];
 

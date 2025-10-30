@@ -32,17 +32,13 @@ fn json_format(
     let input_value =
         String::from_utf8(buffer).map_err(|e| Error::ReadInputError { msg: e.to_string() })?;
 
-    let value: Value = serde_json::from_str(&input_value).map_err(|_| Error::IllegalJsonError {
-        msg: input_value.to_owned(),
-    })?;
+    let value: Value = serde_json::from_str(&input_value).map_err(|_| "非法的json格式")?;
 
     let json_value = match format {
         OutputFormat::Compress => serde_json::to_string(&value),
         OutputFormat::Pretty => serde_json::to_string_pretty(&value),
     }
-    .map_err(|error| Error::JsonFormatError {
-        msg: error.to_string(),
-    })?;
+    .map_err(|_e| "转成Json格式失败")?;
 
     match output {
         None => {

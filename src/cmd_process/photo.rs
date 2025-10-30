@@ -1,4 +1,5 @@
 use crate::cmd_opts::photo::{ActionType, PhotoSubCommand};
+use crate::component::stdout;
 use crate::{Error, error};
 use bloomfilter::Bloom;
 use chrono::NaiveDateTime;
@@ -37,12 +38,10 @@ fn process_shooting_time(input: &str, support_ext: &HashSet<&str>) -> error::Res
             && let Some(ext) = os_str.to_str()
             && support_ext.contains(ext.to_uppercase().as_str())
         {
-            println!("{}", get_file_shooting_time(input_path)?);
+            let shooting_time = get_file_shooting_time(input_path)?;
+            stdout(shooting_time);
         } else {
-            let support_ext_str = format!("{:?}", support_ext);
-            return Err(Error::UnsupportedPhoto {
-                msg: support_ext_str,
-            });
+            return Err("目前不支持此类型的照片.")?;
         }
     }
     Ok(())
@@ -89,8 +88,7 @@ fn operation_single_photo(
     let target_forder = get_target_forder(&shooting_time)?;
 
     if !file_name_checker.contains_key(&target_forder) {
-        let existing_file_names: Bloom<String> = Bloom::new_for_fp_rate(10000, 0.001)
-            .map_err(|e| Error::OtherError { msg: e.to_string() })?;
+        let existing_file_names: Bloom<String> = Bloom::new_for_fp_rate(10000, 0.001)?;
         file_name_checker.insert(target_forder.clone(), existing_file_names);
     }
 
@@ -112,18 +110,17 @@ fn operation_single_photo(
         let target_dir = Path::new(output_dir).join(&target_forder);
 
         if !target_dir.exists() {
-            fs::create_dir_all(&target_dir)
-                .map_err(|e| Error::CreateForderError { msg: e.to_string() })?;
+            fs::create_dir_all(&target_dir).map_err(|e| Error::CreateForderError(e.to_string()))?;
         }
 
         match action {
             ActionType::Move => {
                 fs::rename(path, target_dir.join(file_name_current))
-                    .map_err(|e| Error::MoveFileError { msg: e.to_string() })?;
+                    .map_err(|e| Error::MoveFileError(e.to_string()))?;
             }
             ActionType::Copy => {
                 fs::copy(path, target_dir.join(file_name_current))
-                    .map_err(|e| Error::CopyFileError { msg: e.to_string() })?;
+                    .map_err(|e| Error::CopyFileError(e.to_string()))?;
             }
         }
     }
@@ -133,7 +130,7 @@ fn operation_single_photo(
 
 /// 得到照片的拍摄时间
 fn get_file_shooting_time(path: &Path) -> error::Result<String> {
-    let file = File::open(path).map_err(|e| Error::FileNotExistError { msg: e.to_string() })?;
+    let file = File::open(path).map_err(|e| Error::OpenFileError(e.to_string()))?;
     let mut buffer = BufReader::new(&file);
     let exif_reader = exif::Reader::new();
     let exif = exif_reader
@@ -142,7 +139,7 @@ fn get_file_shooting_time(path: &Path) -> error::Result<String> {
 
     let shooting_time = exif
         .get_field(Tag::DateTimeOriginal, In::PRIMARY)
-        .ok_or(Error::GetShootingTimeError)?
+        .ok_or("获取拍摄时间失败。此照片没有拍摄时间")?
         .display_value()
         .to_string();
 
@@ -152,7 +149,7 @@ fn get_file_shooting_time(path: &Path) -> error::Result<String> {
 /// 根据拍摄时间得到日期目录
 fn get_target_forder(shooting_time: &str) -> error::Result<String> {
     let date_forder = NaiveDateTime::parse_from_str(shooting_time, "%Y-%m-%d %H:%M:%S")
-        .map_err(|e| Error::DateFormatError { msg: e.to_string() })?
+        .map_err(|_e| "时间格式化失败")?
         .and_local_timezone(chrono::Local)
         .unwrap()
         .format("%Y-%m-%d")
@@ -185,8 +182,8 @@ mod tests {
         let exif_reader = exif::Reader::new();
         let exif = exif_reader.read_from_container(&mut buffer).unwrap();
 
-        let x = exif.get_field(Tag:: ImageWidth, In::PRIMARY);
-        let y = exif.get_field(Tag:: ImageLength, In::PRIMARY);
+        let x = exif.get_field(Tag::ImageWidth, In::PRIMARY);
+        let y = exif.get_field(Tag::ImageLength, In::PRIMARY);
         println!("{x:?}");
         println!("{y:?}");
     }

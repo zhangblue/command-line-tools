@@ -27,7 +27,9 @@ fn process_encode(
     let mut reader = get_reader(input)?;
 
     let mut buffer = Vec::new();
-    let _ = reader.read_to_end(&mut buffer).map_err(|e|Error::ReadInputError {msg: e.to_string() })?;
+    let _ = reader
+        .read_to_end(&mut buffer)
+        .map_err(|e| Error::ReadInputError { msg: e.to_string() })?;
 
     let encode = match format {
         Base64Format::Standard => BASE64_STANDARD.encode(buffer),
@@ -62,8 +64,7 @@ fn process_decode(
     }
     .map_err(|e| Error::Base64DecodeError { msg: e.to_string() })?;
 
-    let decode =
-        String::from_utf8(decode).map_err(|e| Error::FormatUtf8Error { msg: e.to_string() })?;
+    let decode = String::from_utf8(decode).map_err(|_e| "转换成UTF8失败")?;
 
     match output {
         None => stdout(decode),

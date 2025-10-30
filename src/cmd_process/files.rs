@@ -1,6 +1,6 @@
 use crate::cmd_opts::file::FilesSubCommand;
 use crate::component::{compute_sha256, write_to_file};
-use crate::{Error, error};
+use crate::error;
 use std::collections::HashMap;
 use walkdir::WalkDir;
 
@@ -36,8 +36,7 @@ fn process_repeat(scan_dir: &str, output: &str) -> error::Result<()> {
     let result_map: HashMap<String, Vec<String>> =
         file_meta.into_iter().filter(|(_, v)| v.len() > 1).collect();
 
-    let json = serde_json::to_string(&result_map)
-        .map_err(|e| Error::IllegalJsonError { msg: e.to_string() })?;
+    let json = serde_json::to_string(&result_map).map_err(|_e| "转成Json格式失败")?;
 
     write_to_file(output, json)?;
 
