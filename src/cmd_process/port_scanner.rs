@@ -12,20 +12,16 @@ pub async fn process_port_scanner(opts: PortScannerOpts) -> error::Result<()> {
         .map(|s| s.to_vec())
         .collect();
 
-    let mut handles = Vec::with_capacity(chunks.len());
+    let mut join_set = tokio::task::JoinSet::new();
     for chunk in chunks.into_iter() {
-        let h = tokio::spawn(async move { scan_ports(opts.addr, chunk).await });
-        handles.push(h);
+        join_set.spawn(scan_ports(opts.addr, chunk));
     }
 
-    for h in handles {
-        if let Err(e) = h.await {
-            println!("PortScanner exited with error: {}", e);
+    while let Some(join_set_result) = join_set.join_next().await {
+        if let Err(e) = join_set_result {
+            eprintln!("连接失败：{}", e);
         }
     }
-
-    println!("All finish");
-
     Ok(())
 }
 

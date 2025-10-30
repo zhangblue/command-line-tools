@@ -29,7 +29,7 @@ impl Error {
             Error::ReadFileError { msg } => println!("读取文件内容失败：{msg}"),
             Error::CreateForderError(msg) => println!("创建目录失败: {msg}"),
             Error::CreateFileError { msg } => println!("创建文件失败: {msg}"),
-            Error::MoveFileError(value) => println!("移动文件失败: {value}"),
+            Error::MoveFileError(msg) => println!("移动文件失败: {msg}"),
 
             Error::OpenFileError(msg) => eprintln!("打开文件失败: {msg}"),
             Error::DateFormatError(msg) => eprintln!("日期格式错误：{msg}"),
