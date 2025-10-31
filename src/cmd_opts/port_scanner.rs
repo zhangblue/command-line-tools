@@ -21,13 +21,5 @@ pub struct PortScannerOpts {
         default_value = "1024"
     )]
     pub port_end: u16,
-
-    #[arg(
-        short,
-        long,
-        help = "并行度",
-        long_help = "并行度",
-        default_value = "1"
-    )]
-    pub parallel: u16,
+    
 }

@@ -4,8 +4,7 @@ use rust_cmd::{
     process_port_scanner, process_times,
 };
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let opts = Opts::parse();
 
     let result = match opts.cmd {
@@ -14,7 +13,10 @@ async fn main() {
         SubCommand::Json(opts) => process_json(opts),
         SubCommand::Photo(sub_command) => process_photo(sub_command),
         SubCommand::Files(sub_command) => process_files(sub_command),
-        SubCommand::PortScanner(opts) => process_port_scanner(opts).await,
+        SubCommand::PortScanner(opts) => {
+            let rt = tokio::runtime::Runtime::new().unwrap();
+            rt.block_on(process_port_scanner(opts))
+        }
     };
 
     if let Err(err) = result {

@@ -6,32 +6,18 @@ use std::process::exit;
 pub async fn process_port_scanner(opts: PortScannerOpts) -> error::Result<()> {
     args_validate(&opts);
 
-    let port_range: Vec<u16> = (opts.port_start..=opts.port_end).collect();
-    let chunks: Vec<Vec<u16>> = port_range
-        .chunks(opts.parallel as usize)
-        .map(|s| s.to_vec())
-        .collect();
-
-    let mut join_set = tokio::task::JoinSet::new();
-    for chunk in chunks.into_iter() {
-        join_set.spawn(scan_ports(opts.addr, chunk));
+    let mut handles = Vec::with_capacity((opts.port_end - opts.port_start + 1) as usize);
+    for port in opts.port_start..=opts.port_end {
+        let join_handle = tokio::spawn(scan(opts.addr, port));
+        handles.push(join_handle);
     }
-
-    while let Some(join_set_result) = join_set.join_next().await {
-        if let Err(e) = join_set_result {
-            eprintln!("连接失败：{}", e);
+    for h in handles {
+        if let Some((ip, port)) = h.await.unwrap() {
+            println!("{}:{}", ip, port);
         }
     }
+
     Ok(())
-}
-
-async fn scan_ports(addr: IpAddr, ports: Vec<u16>) {
-    for port in ports {
-        let scan_attempt = scan(addr, port).await;
-        if let Some((addr, port)) = scan_attempt {
-            println!("{}:{}", addr, port);
-        }
-    }
 }
 
 async fn scan(addr: IpAddr, port: u16) -> Option<(IpAddr, u16)> {
