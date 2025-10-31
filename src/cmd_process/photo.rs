@@ -41,7 +41,7 @@ fn process_shooting_time(input: &str, support_ext: &HashSet<&str>) -> error::Res
             let shooting_time = get_file_shooting_time(input_path)?;
             stdout(shooting_time);
         } else {
-            return Err("目前不支持此类型的照片.")?;
+            Err("目前不支持此类型的照片.")?
         }
     }
     Ok(())
